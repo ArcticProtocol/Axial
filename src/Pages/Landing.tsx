@@ -5,7 +5,7 @@ const LandingPage: React.FC = () => {
     <div>
       {/* Section 1: Full-width background image */}
       <section className="relative h-screen">
-        <div className="bg-landing h-full w-full bg-cover bg-center"></div>
+        <div className="bg-green-spirals h-full w-full bg-cover bg-center"></div>
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 flex-col">
           <h1 className="text-5xl font-bold text-white">
             The all in one platform
@@ -74,19 +74,6 @@ const LandingPage: React.FC = () => {
 export default LandingPage;
 
 const GridTile: React.FC = () => {
-  return (
-    <div className="bg-white p-8 rounded-3xl">
-      <span className="text-3xl mb-4">Icon 1</span>
-      <h3 className="text-xl font-bold mb-2">Title 1</h3>
-      <p className="text-lg">
-        {/* Placeholder content */}
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      </p>
-    </div>
-  );
-};
-
-const ProgressTile: React.FC = () => {
   return (
     <div className="bg-white p-8 rounded-3xl">
       <span className="text-3xl mb-4">Icon 1</span>

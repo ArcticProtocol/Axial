@@ -2,8 +2,8 @@ import React from "react";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black py-8">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between">
+    <footer className="bg-black py-10">
+      <div className="container mx-auto px-4 flex flex-row md:flex-row justify-between">
         <div className="text-white">
           <p>&copy; 2023 Arctic Protocol</p>
         </div>
@@ -18,19 +18,15 @@ const Footer: React.FC = () => {
               Twitter
             </a>
           </li>
+
           <li>
             <a href="#" className="text-white hover:text-gray-300">
-              Community
+              About
             </a>
           </li>
           <li>
             <a href="#" className="text-white hover:text-gray-300">
               Contact Us
-            </a>
-          </li>
-          <li>
-            <a href="#" className="text-white hover:text-gray-300">
-              About
             </a>
           </li>
         </ul>
