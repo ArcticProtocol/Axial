@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import BannerCard from "../Components/Dashboard/Banner";
 import DashboardProjects from "./DashboardProjects";
+import InsuranceProduct from "../Components/Insurnace/InsurnaceProduct";
+import InsuranceQuote from "../Components/Insurnace/QouteFlow";
 
 const Dashboard: React.FC = () => {
   const [selectedTile, setSelectedTile] = useState<string>("Project");
@@ -9,9 +11,14 @@ const Dashboard: React.FC = () => {
   const menuItems = [
     { id: 1, title: "Project", icon: "icon1" },
     { id: 2, title: "Insurance", icon: "icon2" },
+    { id: 3, title: "QOute", icon: "icon2" },
   ];
 
-  const pages = [<DashboardProjects />];
+  const pages = [
+    <DashboardProjects />,
+    <InsuranceProduct />,
+    <InsuranceQuote />,
+  ];
 
   const handleTileClick = (title: string, index: number) => {
     setSelectedTile(title);

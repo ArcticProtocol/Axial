@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import OnboardingForm from "../Components/Dashboard/OnbardingForm";
+import OnboardingForm from "../Components/Project/OnbardingForm";
 
 const DashboardProjects: React.FC = () => {
   const [showOnboardingForm, changeOnboardingFormState] = useState(false);
