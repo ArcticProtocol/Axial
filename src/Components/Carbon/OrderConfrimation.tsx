@@ -1,53 +1,98 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useContract, useContractWrite } from "@thirdweb-dev/react";
+import { getIntegerByCreditTypeString } from "../../util";
+
+import {ethers} from "ethers";
 
 const OrderConfirmationPage = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [creditType, setCreditType] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  /// ThirdWeb
+  const { contract } = useContract(
+    "0x8C2B671c470309f85bd5DD13C885820E3FAfE2bB"
+  );
+  const { mutateAsync: buyCreditTokens, isLoading } = useContractWrite(
+    contract,
+    "buyCreditTokens"
+  );
+
+  const call = async () => {
+    try {
+      const data = await buyCreditTokens({
+        args: [
+          getIntegerByCreditTypeString(creditType),
+          ethers.utils.parseEther(searchParams.get("price")!),
+        ],
+      });
+      console.info("contract call successs", data);
+    } catch (err) {
+      console.error("contract call failure", err);
+    }
+  };
+
+  const handleSelectionChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setCreditType(event.target.value);
+  };
 
   const handleContinueShopping = () => {
-    // Redirect to the homepage or desired page
-    navigate('/');
+    call();
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg p-8">
-        <h2 className="text-2xl font-bold mb-4">Order Confirmation</h2>
-        <p className="text-lg text-gray-600 mb-4">Thank you for your purchase!</p>
+        <h2 className="text-2xl font-bold mb-4">Confirm Purcahse</h2>
+        <p className="text-lg text-gray-600 mb-4">
+          Thank you for making Earth a better place
+        </p>
 
         {/* Display order details */}
         <div className="mb-6">
           <h3 className="text-lg font-semibold">Order Details:</h3>
-          {/* Display order details such as product, quantity, price, etc. */}
+          <div>
+            <label htmlFor="dropdown">Select an option:</label>
+            <select
+              id="dropdown"
+              value={creditType}
+              onChange={handleSelectionChange}
+            >
+              <option value="">Select</option>
+              <option value="Ocean">Ocean</option>
+              <option value="Nature">Nature</option>
+              <option value="Plastic">Plastic</option>
+            </select>
+          </div>
         </div>
 
         {/* Display payment details */}
         <div className="mb-6">
           <h3 className="text-lg font-semibold">Payment Information:</h3>
+          <div className="flex flex-col">
+            <h1 className="text-lg font-semibold">
+              {searchParams.get("price")}
+            </h1>
+          </div>
           {/* Display payment details such as payment method, total amount, etc. */}
         </div>
 
         {/* Display shipping details */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold">Shipping Address:</h3>
-          {/* Display shipping address details */}
+          <h3 className="text-lg font-semibold">Impact</h3>
+          <h1 className="text-lg font-semibold">{searchParams.get("label")}</h1>
         </div>
-
-        {/* Display additional information */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold">Additional Information:</h3>
-          {/* Display any additional information or instructions */}
-        </div>
-
-        {/* Order confirmation message */}
-        <p className="text-lg text-green-500 mb-4">Your order has been successfully placed!</p>
 
         {/* Continue Shopping button */}
         <button
-          className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg px-4 py-2"
+          className="bg-green-900 hover:bg-green-800 text-white rounded-lg px-4 py-2 w-full"
           onClick={handleContinueShopping}
+          disabled={isLoading || creditType.length < 2}
         >
-          Continue Shopping
+          Confirm
         </button>
       </div>
     </div>

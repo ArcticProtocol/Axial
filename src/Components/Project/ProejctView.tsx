@@ -18,7 +18,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ project }) => {
     <div className="bg-white shadow-lg rounded-2xl overflow-hidden transition-transform duration-300 ease-in-out transform hover:scale-105">
       <div className="w-full h-48">
         <img
-          src={project.image}
+          src="https://cloud.appwrite.io/v1/storage/buckets/6483954174e7278a6135/files/648395808185ffa0fefc/view?project=647cb3459627ab124ce3&mode=admin"
           alt="Project"
           className="w-full h-full object-cover"
         />

@@ -5,7 +5,7 @@ import Select from "react-select";
 function OnboardingForm() {
   const { register, handleSubmit, formState, watch, control } = useForm();
 
-  const impact = watch("impact");
+  const impactGoal = watch("impactGoal");
   const country: string = watch("country");
 
   const onSubmit = (data: any) => {
@@ -62,7 +62,7 @@ function OnboardingForm() {
   const {
     field: { onChange, onBlur, value },
   } = useController({
-    name: "selectedOptions",
+    name: "sdgGoals",
     control,
     defaultValue: [], // Provide initial selected options
   });
@@ -134,12 +134,22 @@ function OnboardingForm() {
                 />
               </div>
 
-              <label htmlFor="imageInput">Cover Image</label>
+              <label htmlFor="projectName" className="font-bold mb-2">
+                Project Story
+              </label>
+              <input
+                type="text"
+                id="projectStory"
+                className="p-2 border border-gray-300 rounded px-10"
+                {...register("projectName", { required: true })}
+              />
+
+              <label htmlFor="coverImageUrl">Cover Image</label>
               <input
                 type="file"
-                id="imageInput"
+                id="coverImageUrl"
                 accept="image/*"
-                {...register("image")}
+                {...register("coverImageUrl")}
               />
 
               <div className="flex flex-col">
@@ -156,7 +166,7 @@ function OnboardingForm() {
 
               <div className="flex flex-col">
                 <label htmlFor="impact" className="font-bold mb-2 mt-4">
-                  Impact: {impact} (tCO2)
+                  Impact: {impactGoal} (tCO2)
                 </label>
                 <input
                   type="range"
@@ -164,7 +174,7 @@ function OnboardingForm() {
                   min="50"
                   max="1000"
                   className="w-full bg-green-700"
-                  {...register("impact", { required: true })}
+                  {...register("impactGoal", { required: true })}
                 />
               </div>
 
@@ -214,19 +224,21 @@ function OnboardingForm() {
                 >
                   <option value="">Select City</option>
                   {cities[country]?.map((e: any) => (
-                    <option key={e} value={e}>{e}</option>
+                    <option key={e} value={e}>
+                      {e}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="type" className="font-bold mb-2">
+                <label htmlFor="creditType" className="font-bold mb-2">
                   Credit Type
                 </label>
                 <select
-                  id="type"
+                  id="creditType"
                   className="p-2 border border-gray-300 rounded"
-                  {...register("type", { required: true })}
+                  {...register("creditType", { required: true })}
                 >
                   <option value="">Select Type</option>
                   <option value="Clean Energy">Clean Energy</option>
@@ -236,13 +248,13 @@ function OnboardingForm() {
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="sdgGoals" className="font-bold mb-2">
+                <label htmlFor="year" className="font-bold mb-2">
                   Select Year
                 </label>
                 <select
-                  id="yearCommissioned"
+                  id="year"
                   className="p-2 border border-gray-300 rounded"
-                  {...register("yearCommissioned", { required: true })}
+                  {...register("year", { required: true })}
                 >
                   <option value="">Select Year</option>
                   {years.map((e) => (
