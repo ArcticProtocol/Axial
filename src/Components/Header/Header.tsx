@@ -1,3 +1,4 @@
+import { ConnectWallet } from "@thirdweb-dev/react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -14,7 +15,7 @@ const Header: React.FC = () => {
         </div>
       </Link>
       <nav>
-        <ul className="flex space-x-4 flex-grow">
+        <ul className="flex space-x-4 flex-grow items-center">
           {menuItems.map((item, index) => (
             <Link
               to={routes[index]}
@@ -24,6 +25,14 @@ const Header: React.FC = () => {
               {item}
             </Link>
           ))}
+          <ConnectWallet
+            theme="dark"
+            btnTitle="Get Started"
+            style={{ height: 45 }}
+            auth={{
+              loginOptional: false,
+            }}
+          />
         </ul>
       </nav>
     </header>

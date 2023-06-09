@@ -1,13 +1,18 @@
+import { useContext } from "react";
 import BuyCarbonCredits from "../Components/Carbon/BuyOffsets";
 import MonthlyOffsetChart from "../Components/Charts/MonthlyOffsetChart";
 import OffsetTypePie from "../Components/Charts/OffsetTypePie";
 import ProjectTabView from "../Components/Project/TabView";
+import UserAppContext, { UserAppCtx } from "../Context/usermtecontext";
 
 function OffsetView() {
+  const { userMeta } = useContext<UserAppCtx>(UserAppContext)!;
+
   return (
     <div className="bg-gray-50 p-12">
       <section>
         <div className="w-full h-1/2 rounded-xl bg-white shadow-lg p-14">
+          <h1 className="text-xl font-bold mb-4"> Hello {userMeta.name} 👋🏻</h1>
           <div className="flex h-full">
             <div className="w-1=3/4 flex flex-col justify-center">
               <h1 className="text-3xl font-bold mb-4">Offset Activity</h1>

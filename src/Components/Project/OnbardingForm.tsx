@@ -1,12 +1,120 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { useController, useForm } from "react-hook-form";
+import Select from "react-select";
 
 function OnboardingForm() {
-  const { register, handleSubmit, formState } = useForm();
+  const { register, handleSubmit, formState, watch, control } = useForm();
+
+  const impact = watch("impact");
+  const country: string = watch("country");
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    console.log({ data });
   };
+
+  const countries = ["India", "USA", "UK"];
+
+  type CityData = {
+    [key: string]: string[];
+  };
+
+  const cities: CityData = {
+    USA: [
+      "New York City",
+      "Los Angeles",
+      "Chicago",
+      "Houston",
+      "San Francisco",
+      "Miami",
+      "Washington, D.C.",
+      "Boston",
+      "Seattle",
+      "Las Vegas",
+    ],
+
+    UK: [
+      "London",
+      "Manchester",
+      "Birmingham",
+      "Edinburgh",
+      "Glasgow",
+      "Liverpool",
+      "Bristol",
+      "Leeds",
+      "Newcastle",
+      "Oxford",
+    ],
+
+    India: [
+      "Mumbai",
+      "Delhi",
+      "Bangalore",
+      "Chennai",
+      "Kolkata",
+      "Hyderabad",
+      "Pune",
+      "Ahmedabad",
+      "Jaipur",
+      "Lucknow",
+    ],
+  };
+
+  const {
+    field: { onChange, onBlur, value },
+  } = useController({
+    name: "selectedOptions",
+    control,
+    defaultValue: [], // Provide initial selected options
+  });
+
+  const options = [
+    { value: "No Poverty", label: "No Poverty" },
+    { value: "Zero Hunger", label: "Zero Hunger" },
+    {
+      value: "Good Health and Well-being",
+      label: "Good Health and Well-being",
+    },
+    { value: "Quality Education", label: "Quality Education" },
+    { value: "Gender Equality", label: "Gender Equality" },
+    {
+      value: "Clean Water and Sanitation",
+      label: "Clean Water and Sanitation",
+    },
+    {
+      value: "Affordable and Clean Energy",
+      label: "Affordable and Clean Energy",
+    },
+    {
+      value: "Decent Work and Economic Growth",
+      label: "Decent Work and Economic Growth",
+    },
+    {
+      value: "Industry, Innovation, and Infrastructure",
+      label: "Industry, Innovation, and Infrastructure",
+    },
+    { value: "Reduced Inequalities", label: "Reduced Inequalities" },
+    {
+      value: "Sustainable Cities and Communities",
+      label: "Sustainable Cities and Communities",
+    },
+    {
+      value: "Responsible Consumption and Production",
+      label: "Responsible Consumption and Production",
+    },
+    { value: "Climate Action", label: "Climate Action" },
+    { value: "Life Below Water", label: "Life Below Water" },
+    { value: "Life on Land", label: "Life on Land" },
+    {
+      value: "Peace, Justice, and Strong Institutions",
+      label: "Peace, Justice, and Strong Institutions",
+    },
+    {
+      value: "Partnerships for the Goals",
+      label: "Partnerships for the Goals",
+    },
+  ];
+
+  const years = ["2018", "2019", "2020", "2021", "2022", "2023"];
 
   return (
     <div className="w-full mx-auto rounded-xl shadow-2xl p-10 my-10">
@@ -26,17 +134,13 @@ function OnboardingForm() {
                 />
               </div>
 
-              <div className="flex flex-col">
-                <label htmlFor="coverImage" className="font-bold mb-2 px-6">
-                  Cover Image
-                </label>
-                <input
-                  type="text"
-                  id="coverImage"
-                  className="p-2 border border-gray-300 rounded"
-                  {...register("coverImage", { required: true })}
-                />
-              </div>
+              <label htmlFor="imageInput">Cover Image</label>
+              <input
+                type="file"
+                id="imageInput"
+                accept="image/*"
+                {...register("image")}
+              />
 
               <div className="flex flex-col">
                 <label htmlFor="teamMembers" className="font-bold mb-2 px-6">
@@ -46,37 +150,37 @@ function OnboardingForm() {
                   type="text"
                   id="teamMembers"
                   className="p-2 border border-gray-300 rounded"
-                  {...register("teamMembers", { required: true })}
+                  {...register("teamMembers")}
                 />
               </div>
 
               <div className="flex flex-col">
                 <label htmlFor="impact" className="font-bold mb-2 mt-4">
-                  Impact (tCO2)
+                  Impact: {impact} (tCO2)
                 </label>
                 <input
                   type="range"
                   id="impact"
-                  className="w-full"
+                  min="50"
+                  max="1000"
+                  className="w-full bg-green-700"
                   {...register("impact", { required: true })}
                 />
               </div>
 
               <div className="flex flex-col">
                 <label htmlFor="yearCommissioned" className="font-bold mb-2">
-                  Year Started
+                  SDG Goals
                 </label>
-                <select
-                  id="yearCommissioned"
-                  className="p-2 border border-gray-300 rounded"
-                  {...register("yearCommissioned", { required: true })}
-                >
-                  <option value="">Select Year</option>
-                  <option value="2022">2022</option>
-                  <option value="2023">2023</option>
-                  <option value="2024">2024</option>
-                  {/* Add more options as needed */}
-                </select>
+
+                <Select
+                  isMulti
+                  options={options}
+                  placeholder="Select Goals"
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                />
               </div>
             </div>
 
@@ -91,10 +195,11 @@ function OnboardingForm() {
                   {...register("country", { required: true })}
                 >
                   <option value="">Select Country</option>
-                  <option value="USA">USA</option>
-                  <option value="UK">UK</option>
-                  <option value="Canada">Canada</option>
-                  {/* Add more options as needed */}
+                  {countries.map((e) => (
+                    <option key={e} value={e}>
+                      {e}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -108,16 +213,15 @@ function OnboardingForm() {
                   {...register("city", { required: true })}
                 >
                   <option value="">Select City</option>
-                  <option value="New York">New York</option>
-                  <option value="London">London</option>
-                  <option value="Toronto">Toronto</option>
-                  {/* Add more options as needed */}
+                  {cities[country]?.map((e: any) => (
+                    <option key={e} value={e}>{e}</option>
+                  ))}
                 </select>
               </div>
 
               <div className="flex flex-col">
                 <label htmlFor="type" className="font-bold mb-2">
-                  Type
+                  Credit Type
                 </label>
                 <select
                   id="type"
@@ -127,26 +231,25 @@ function OnboardingForm() {
                   <option value="">Select Type</option>
                   <option value="Clean Energy">Clean Energy</option>
                   <option value="Ocean">Ocean</option>
-                  <option value="Nature">Nature</option>
-                  <option value="Waste">Waste</option>
-                  {/* Add more options as needed */}
+                  <option value="Plastic Removal">Plastic Removal</option>
                 </select>
               </div>
 
               <div className="flex flex-col">
                 <label htmlFor="sdgGoals" className="font-bold mb-2">
-                  SDG Goals
+                  Select Year
                 </label>
                 <select
-                  id="sdgGoals"
+                  id="yearCommissioned"
                   className="p-2 border border-gray-300 rounded"
-                  {...register("sdgGoals", { required: true })}
+                  {...register("yearCommissioned", { required: true })}
                 >
-                  <option value="">Select SDG Goals</option>
-                  <option value="Goal 1">Goal 1</option>
-                  <option value="Goal 2">Goal 2</option>
-                  <option value="Goal 3">Goal 3</option>
-                  {/* Add more options as needed */}
+                  <option value="">Select Year</option>
+                  {years.map((e) => (
+                    <option key={e} value={e}>
+                      {e}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -155,7 +258,7 @@ function OnboardingForm() {
           <div className="py-8">
             <button
               type="submit"
-              className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded self-center"
+              className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded-xl self-center "
               disabled={formState.isSubmitting}
             >
               Submit
