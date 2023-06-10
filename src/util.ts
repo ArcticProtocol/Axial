@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 enum CreditType {
   Ocean,
   Clean,
@@ -20,16 +22,21 @@ function getIntegerByCreditType(cred: CreditType) {
   }
 }
 
-
 function getIntegerByCreditTypeString(cred: string) {
-    if (cred === "Ocean") {
-      return 0;
-    } else if (cred === "Clean") {
-      return 1;
-    } else if (cred === "Plastic") {
-      return 2;
-    }
+  if (cred === "Ocean") {
+    return 0;
+  } else if (cred === "Clean") {
+    return 1;
+  } else if (cred === "Plastic") {
+    return 2;
   }
-  
-export { getIntegerByCreditType , getIntegerByCreditTypeString};
+}
+
+function weiToEther(wei: any) {
+  const ether = ethers.utils.formatEther(wei);
+  const etherWithLimitedDecimals = parseFloat(ether).toFixed(2);
+  return etherWithLimitedDecimals;
+}
+
+export { getIntegerByCreditType, getIntegerByCreditTypeString, weiToEther };
 export { CreditType };

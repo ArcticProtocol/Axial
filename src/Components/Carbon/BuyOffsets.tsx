@@ -4,8 +4,8 @@ import { createSearchParams, useNavigate } from "react-router-dom";
 const BuyCarbonCredits = () => {
   const options = [
     { label: "5 tCO2", price: "$MATIC 1.5", value: 0.5, tokens: 5 },
-    { label: "10 tCO2", price: "$MATIC 12 3% off", tokens: 12 },
-    { label: "15 tCO2", price: "$MATIC  20 11% off", tokens: 20 },
+    { label: "10 tCO2", price: "$MATIC 12 3% off", value: 10, tokens: 12 },
+    { label: "15 tCO2", price: "$MATIC  20 11% off", value: 15, tokens: 20 },
   ];
 
   const navigation = useNavigate();

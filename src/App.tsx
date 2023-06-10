@@ -20,6 +20,7 @@ import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
 import { getUserStatus } from "./Repostitory/Repository";
 import SignupDialog from "./Components/Signup/Signup";
 import UserAppContext from "./Context/usermtecontext";
+import Loader from "./Components/Loader/Loader";
 
 const App: React.FC = () => {
   const [userMeta, setuserMeta] = useState({
@@ -111,8 +112,13 @@ interface PropType {
 const PrivateRoute: FC<PropType> = ({ component: Component }) => {
   const connectionStatus = useConnectionStatus();
 
-  if (connectionStatus === "connected") return <Component />;
-  return <OverlayDialog />;
+  if (connectionStatus === "connected") {
+    return <Component />;
+  } else if (connectionStatus === "connecting") {
+    return <Loader />;
+  } else {
+    return <OverlayDialog />;
+  }
 };
 
 const OverlayDialog = () => {

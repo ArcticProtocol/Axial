@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useContract, useContractWrite } from "@thirdweb-dev/react";
 import { getIntegerByCreditTypeString } from "../../util";
 
-import {ethers} from "ethers";
+import { ethers } from "ethers";
 
 const OrderConfirmationPage = () => {
   const navigate = useNavigate();
@@ -24,8 +24,12 @@ const OrderConfirmationPage = () => {
       const data = await buyCreditTokens({
         args: [
           getIntegerByCreditTypeString(creditType),
-          ethers.utils.parseEther(searchParams.get("price")!),
+          ethers.utils.parseEther(searchParams.get("tokens")!),
         ],
+        overrides: {
+          gasLimit: 500000,
+          value: ethers.utils.parseEther(searchParams.get("value")!),
+        },
       });
       console.info("contract call successs", data);
     } catch (err) {
