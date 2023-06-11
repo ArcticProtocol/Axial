@@ -14,7 +14,7 @@ import {
 } from "react-router-dom";
 import OffsetView from "./Pages/Offset";
 import SwapView from "./Pages/Swap";
-import OrderConfirmationPage from "./Components/Carbon/OrderConfrimation";
+import OrderConfirmationPage from "./Components/Carbon/OrderConfirmation";
 import { useAddress, useConnectionStatus } from "@thirdweb-dev/react";
 import { ThirdwebProvider, metamaskWallet } from "@thirdweb-dev/react";
 import { getUserStatus } from "./Repostitory/Repository";
@@ -51,6 +51,7 @@ const App: React.FC = () => {
 const RouteHandler: React.FC<{}> = () => {
   const address = useAddress();
   const [hasRegistered, setRegistered] = useState(true);
+  const connectionStatus = useConnectionStatus();
 
   const { userMeta, updateUserMeta } = useContext(UserAppContext)!;
 
@@ -98,7 +99,7 @@ const RouteHandler: React.FC<{}> = () => {
       </Routes>
       <Footer />
 
-      {!hasRegistered && (
+      {!hasRegistered && connectionStatus === "connected" && (
         <SignupDialog address={address!} setRegistered={setRegistered} />
       )}
     </Router>

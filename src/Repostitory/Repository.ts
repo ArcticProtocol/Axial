@@ -80,7 +80,40 @@ async function uploadFile(file: File): Promise<AxiosResponse<any>> {
   }
 }
 
+type CarbonOffsetRequest = {
+  userName: string;
+  offsetAmount: number;
+  creditType: string;
+  txHash: string;
+  owner: string;
+};
 
+type CarbonOffsetResponse = {
+  userName: string;
+  offsetAmount: number;
+  creditType: string;
+  txHash: string;
+  owner: string;
+  timestamp: string;
+  month?: string;
+};
 
+const registerOffser = async (
+  offsetDetails: CarbonOffsetRequest
+): Promise<boolean> => {
+  try {
+    const response = await axios.post(
+      `${ENDPOINT}/registerOffset`,
+      offsetDetails
+    );
+    console.log("Carbon offset details sent successfully:", response.data);
+    if (response.data.$id) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    throw new Error("Failed to create offset ");
+  }
+};
 
-export { getUserStatus, createUser, uploadFile };
+export { getUserStatus, createUser, uploadFile, registerOffser };

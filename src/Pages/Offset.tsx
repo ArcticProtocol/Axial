@@ -75,7 +75,7 @@ const InitiateOffset: React.FC = () => {
   return (
     <div className="w-full bg-white shadow-md mt-10">
       <div className="flex flex-col items-center mb-6">
-        <h1 className="text-xl font-semibold">Balances</h1>
+        <h1 className="text-xl font-semibold">Carbon Credit Balance</h1>
       </div>
       <div className="max-w-7xl mx-auto py-4 px-6 flex justify-around ">
         <Card
@@ -105,6 +105,7 @@ const InitiateOffset: React.FC = () => {
           }`}
           buttonText="Offset Now"
         />
+
         <Card
           onTap={() => {
             setCurrentOffset({

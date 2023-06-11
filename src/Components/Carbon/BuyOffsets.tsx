@@ -18,7 +18,7 @@ const BuyCarbonCredits = () => {
       pathname: "/confirmOrder",
       search: createSearchParams({
         price: option.value,
-        label: option.tokens,
+        tokens: option.tokens,
       }).toString(),
     });
   };

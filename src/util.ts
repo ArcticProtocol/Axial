@@ -38,5 +38,10 @@ function weiToEther(wei: any) {
   return etherWithLimitedDecimals;
 }
 
-export { getIntegerByCreditType, getIntegerByCreditTypeString, weiToEther };
+function etherToWei(ether: any) {
+  const wei = ethers.utils.parseEther(ether);
+  return wei;
+}
+
+export { getIntegerByCreditType, getIntegerByCreditTypeString, weiToEther , etherToWei};
 export { CreditType };
