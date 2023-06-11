@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { formatTimestamp, formatTimestampMonth } from "../util";
+import { v4 as uuidv4 } from "uuid";
 
 const ENDPOINT = "http://localhost:3001";
 
@@ -160,6 +161,110 @@ const getGlobalOffsetRegistry = async (): Promise<CarbonOffset[]> => {
   }
 };
 
+type Project = {
+  projectId: string;
+  projectName: string;
+  teamMembers: string;
+  impactGoal: string;
+  country: string;
+  creditType: string;
+  year: string;
+  coverImageUrl?: string;
+  sdgGoals: string[];
+  city: string;
+  owner: string;
+  projectStory: string;
+};
+
+type ProjectRequest = {
+  projectId: string;
+  projectName: string;
+  teamMembers: string[];
+  impactGoal: string;
+  country: string;
+  creditType: string;
+  year: string;
+  coverImageUrl?: string;
+  sdgGoals: string[];
+  city: string;
+  owner: string;
+  projectStory: string;
+};
+
+const registerProject = async (
+  projectRequest: ProjectRequest
+): Promise<boolean> => {
+  try {
+    const response = await axios.post(`${ENDPOINT}/createProject`, {
+      ...projectRequest,
+    });
+
+    if (response.data.$id) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.log({ error });
+    throw new Error("Failed to register project ");
+  }
+};
+
+const getUserProjects = async (address: string): Promise<Project[]> => {
+  try {
+    console.log({ address });
+    const response = await axios.get(`${ENDPOINT}/userProjects`, {
+      params: {
+        address: address,
+      },
+    });
+
+    const userProjects: Project[] = [];
+    response.data.forEach((e: Project) => {
+      userProjects.push(e);
+    });
+
+    return userProjects;
+  } catch (error) {
+    console.log({ error });
+    throw new Error("Failed to get user projects ");
+  }
+};
+
+const getProject = async (projectId: string): Promise<Project> => {
+  try {
+    console.log({ projectId });
+    const response = await axios.get(`${ENDPOINT}/projectDetails`, {
+      params: {
+        projectId,
+      },
+    });
+
+    const project: Project = response.data;
+    console.log({project})
+
+    return project;
+  } catch (error) {
+    console.log({ error });
+    throw new Error("Failed to get user projects ");
+  }
+};
+
+const getGlobalProjects = async (): Promise<Project[]> => {
+  try {
+    const response = await axios.get(`${ENDPOINT}/projects`, {});
+
+    const userProjects: Project[] = [];
+    response.data.forEach((e: Project) => {
+      userProjects.push(e);
+    });
+
+    return userProjects;
+  } catch (error) {
+    console.log({ error });
+    throw new Error("Failed to get projects ");
+  }
+};
+
 export {
   getUserStatus,
   createUser,
@@ -167,6 +272,10 @@ export {
   registerOffset,
   gertUserOffsets,
   getGlobalOffsetRegistry,
+  getUserProjects,
+  getGlobalProjects,
+  registerProject,
+  getProject,
 };
 
-export type { CarbonOffset };
+export type { CarbonOffset, Project };

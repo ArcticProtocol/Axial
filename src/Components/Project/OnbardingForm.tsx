@@ -1,15 +1,88 @@
-import React, { useState } from "react";
+import { useContract, useContractWrite } from "@thirdweb-dev/react";
+import React, { useContext, useState } from "react";
 import { useController, useForm } from "react-hook-form";
 import Select from "react-select";
+import { AXIAL_PROJECT_TRACKER_ADDRESS } from "../../util";
+import { v4 as uuidv4 } from "uuid";
+import UserAppContext from "../../Context/usermtecontext";
+import { registerProject } from "../../Repostitory/Repository";
+import WidgetLoader from "../Loader/WidgetLoader";
 
 function OnboardingForm() {
   const { register, handleSubmit, formState, watch, control } = useForm();
 
+  const { contract } = useContract(AXIAL_PROJECT_TRACKER_ADDRESS);
+  const { mutateAsync: addProject, isLoading } = useContractWrite(
+    contract,
+    "addProject"
+  );
+  const { userMeta } = useContext(UserAppContext)!;
   const impactGoal = watch("impactGoal");
   const country: string = watch("country");
 
-  const onSubmit = (data: any) => {
-    console.log({ data });
+  const call = async (
+    id: string,
+    name: string,
+    funding: number,
+    rating: number,
+    teamMembers: string[]
+  ) => {
+    try {
+      const data = await addProject({
+        args: [id, name, funding, impactGoal, rating, teamMembers],
+      });
+      console.info("contract call successs", data);
+      return data.receipt.transactionHash;
+    } catch (err) {
+      console.error("contract call failure", err);
+    }
+  };
+
+  const onSubmit = async (formData: any) => {
+    console.log({ formData });
+    let uuid = uuidv4();
+    let _sdgGoals: string[] = [];
+
+    const {
+      city,
+      country,
+      creditType,
+      impactGoal,
+      projectName,
+      sdgGoals,
+      teamMembers,
+      projectStory,
+      year,
+      funding,
+    } = formData;
+
+    sdgGoals.forEach((e: any) => {
+      _sdgGoals.push(e.value);
+    });
+
+    let result = await call(uuid, projectName, funding, 0, [
+      userMeta.pubcliKey,
+    ]);
+    if (result) {
+      const request = {
+        projectId: uuid,
+        projectName: projectName,
+        teamMembers: [userMeta.pubcliKey],
+        impactGoal: impactGoal,
+        country: country,
+        creditType: creditType,
+        year: year,
+        sdgGoals: _sdgGoals,
+        city: city,
+        owner: userMeta.pubcliKey,
+        projectStory: projectStory,
+      };
+
+      let result = await registerProject(request);
+      if (result) {
+        console.log("success");
+      }
+    }
   };
 
   const countries = ["India", "USA", "UK"];
@@ -134,14 +207,14 @@ function OnboardingForm() {
                 />
               </div>
 
-              <label htmlFor="projectName" className="font-bold mb-2">
+              <label htmlFor="projectStory" className="font-bold mb-2">
                 Project Story
               </label>
               <input
                 type="text"
                 id="projectStory"
                 className="p-2 border border-gray-300 rounded px-10"
-                {...register("projectName", { required: true })}
+                {...register("projectStory", { required: true })}
               />
 
               <label htmlFor="coverImageUrl">Cover Image</label>
@@ -179,7 +252,7 @@ function OnboardingForm() {
               </div>
 
               <div className="flex flex-col">
-                <label htmlFor="yearCommissioned" className="font-bold mb-2">
+                <label htmlFor="sdgGoals" className="font-bold mb-2">
                   SDG Goals
                 </label>
 
@@ -264,6 +337,18 @@ function OnboardingForm() {
                   ))}
                 </select>
               </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="funding" className="font-bold mb-2">
+                  Previous Funding
+                </label>
+                <input
+                  type="number"
+                  id="funding"
+                  className="p-2 border border-gray-300 rounded px-10"
+                  {...register("funding", { required: true })}
+                />
+              </div>
             </div>
           </div>
 
@@ -273,7 +358,9 @@ function OnboardingForm() {
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-12 rounded-xl self-center "
               disabled={formState.isSubmitting}
             >
-              Submit
+              {isLoading && <WidgetLoader />}
+
+              {!isLoading && <div> Submit </div>}
             </button>
           </div>
         </div>

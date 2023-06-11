@@ -27,8 +27,9 @@ const ConfirmOffsetModal = ({
   creditType,
   closeModal,
 }: ConfirmOffset) => {
-  const [offsetValue, setOffsetValue] = useState(0);
   const navigate = useNavigate();
+  const [offsetValue, setOffsetValue] = useState(0);
+
   const { contract } = useContract(AXIAL_MARKET_CONTRACT_ADDRESS);
   const { mutateAsync: offsetTokens, isLoading } = useContractWrite(
     contract,

@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import BannerCard from "../Components/Dashboard/Banner";
 import DashboardProjects from "./DashboardProjects";
 import InsuranceProduct from "../Components/Insurnace/InsurnaceProduct";
 import InsuranceQuote from "../Components/Insurnace/QouteFlow";
+import { Project, getUserProjects } from "../Repostitory/Repository";
+import UserAppContext, { UserAppCtx } from "../Context/usermtecontext";
 
 const Dashboard: React.FC = () => {
   const [selectedTile, setSelectedTile] = useState<string>("Project");
   const [currentIndex, setcurrentIndex] = useState<number>(0);
 
   const menuItems = [
-    { id: 1, title: "Project", icon: "icon1" },
-    { id: 2, title: "Insurance", icon: "icon2" },
-    { id: 3, title: "QOute", icon: "icon2" },
+    { id: 1, title: "Project", icon: "Manage" },
+    { id: 2, title: "Insurance", icon: "Get" },
   ];
 
+  const [userProjects, setUserProjects] = useState<Project[]>();
+  const { userMeta } = useContext<UserAppCtx>(UserAppContext)!;
+
+  useEffect(() => {
+    const call = async () => {
+      let response = await getUserProjects(userMeta.pubcliKey);
+      setUserProjects(response);
+    };
+
+    call();
+  }, []);
+
   const pages = [
-    <DashboardProjects />,
+    <DashboardProjects projects={userProjects!} />,
     <InsuranceProduct />,
     <InsuranceQuote />,
   ];

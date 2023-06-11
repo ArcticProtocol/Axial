@@ -21,7 +21,9 @@ import { getUserStatus } from "./Repostitory/Repository";
 import SignupDialog from "./Components/Signup/Signup";
 import UserAppContext from "./Context/usermtecontext";
 import Loader from "./Components/Loader/Loader";
-import Registry from './Pages/Registry'
+import Registry from "./Pages/Registry";
+import ProjectDetailView from "./Components/Project/ProjectDetailView";
+import AdminPage from "./Pages/Admin";
 
 const App: React.FC = () => {
   const [userMeta, setuserMeta] = useState({
@@ -84,11 +86,16 @@ const RouteHandler: React.FC<{}> = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/swap" element={<SwapView />} />
-        <Route path="/registry" element={<Registry/>} />
+        <Route path="/registry" element={<Registry />} />
+        <Route path="/admin" element={<PrivateRoute component={AdminPage} />} />
 
         <Route
           path="/offset"
           element={<PrivateRoute component={OffsetView} />}
+        />
+        <Route
+          path="/projectDetail"
+          element={<PrivateRoute component={ProjectDetailView} />}
         />
         <Route
           path="/dashboard"

@@ -1,8 +1,19 @@
 import React, { useState } from "react";
 import OnboardingForm from "../Components/Project/OnbardingForm";
+import { Project } from "../Repostitory/Repository";
+import ProjectListTile from "../Components/Project/PorjectListTile";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
-const DashboardProjects: React.FC = () => {
+type DashboardProjectsParam = {
+  projects: Project[];
+};
+
+const DashboardProjects: React.FC<DashboardProjectsParam> = ({ projects }) => {
   const [showOnboardingForm, changeOnboardingFormState] = useState(false);
+
+  if (projects && projects.length > 0) {
+    return <DashboardProjectsView data={projects} />;
+  }
 
   return (
     <div className="flex flex-col justify-start items-center h-screen">
@@ -22,7 +33,9 @@ const DashboardProjects: React.FC = () => {
       {!showOnboardingForm && (
         <section className="w-4/5 flex justify-center items-center mt-4">
           <button
-            onClick={() => {changeOnboardingFormState(true)}}
+            onClick={() => {
+              changeOnboardingFormState(true);
+            }}
             className="bg-gradient-to-r from-green-950 to-green-300 py-6 px-16 rounded-full"
           >
             <h2 className="text-white text-xl font-bold">Apply Now</h2>
@@ -35,6 +48,38 @@ const DashboardProjects: React.FC = () => {
           <OnboardingForm />
         </section>
       )}
+    </div>
+  );
+};
+
+type DashboardProjectsViewParams = {
+  data: Project[];
+};
+
+const DashboardProjectsView: React.FC<DashboardProjectsViewParams> = ({
+  data,
+}) => {
+  const navigation = useNavigate();
+
+  return (
+    <div className="flex flex-col flex-wrap w-full mt-10">
+      {data.map((e) => (
+        <ProjectListTile
+          key={e.projectId}
+          coverImage={e.coverImageUrl!}
+          title={e.projectName}
+          balance={e.year}
+          creditType={e.creditType}
+          onClick={() => {
+            navigation({
+              pathname: "/projectDetail",
+              search: createSearchParams({
+                projectId: e.projectId,
+              }).toString(),
+            });
+          }}
+        />
+      ))}
     </div>
   );
 };
