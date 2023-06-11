@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useContract, useContractWrite } from "@thirdweb-dev/react";
-import { getIntegerByCreditTypeString } from "../../util";
+import {
+  AXIAL_MARKET_CONTRACT_ADDRESS,
+  getIntegerByCreditTypeString,
+} from "../../util";
 import { ToastContainer, toast } from "react-toastify";
 import { ethers } from "ethers";
 import WidgetLoader from "../Loader/WidgetLoader";
@@ -11,9 +14,7 @@ const OrderConfirmationPage = () => {
   const [creditType, setCreditType] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const { contract } = useContract(
-    "0x8C2B671c470309f85bd5DD13C885820E3FAfE2bB"
-  );
+  const { contract } = useContract(AXIAL_MARKET_CONTRACT_ADDRESS);
   const { mutateAsync: buyCreditTokens, isLoading } = useContractWrite(
     contract,
     "buyCreditTokens"
@@ -31,8 +32,8 @@ const OrderConfirmationPage = () => {
           value: ethers.utils.parseEther(searchParams.get("price")!.toString()),
         },
       });
-      return data.receipt.transactionHash;
       console.info("contract call successs", data);
+      return data.receipt.transactionHash;
     } catch (err) {
       console.error("contract call failure", err);
     }

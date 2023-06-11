@@ -1,8 +1,15 @@
 import React, { Dispatch, useContext, useState } from "react";
 import WidgetLoader from "../Loader/WidgetLoader";
-import { registerOffser } from "../../Repostitory/Repository";
+import { registerOffset } from "../../Repostitory/Repository";
 import { useContract, useContractWrite } from "@thirdweb-dev/react";
-import { etherToWei, getIntegerByCreditTypeString, weiToEther } from "../../util";
+import {
+  AXIAL_DAO_MEMBERSHIP_NFT_ADDRESS,
+  AXIAL_DAO_MEMBERSHIP_NFT_TOKEN_URI,
+  AXIAL_MARKET_CONTRACT_ADDRESS,
+  etherToWei,
+  getIntegerByCreditTypeString,
+  weiToEther,
+} from "../../util";
 import UserAppContext from "../../Context/usermtecontext";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,9 +29,7 @@ const ConfirmOffsetModal = ({
 }: ConfirmOffset) => {
   const [offsetValue, setOffsetValue] = useState(0);
   const navigate = useNavigate();
-  const { contract } = useContract(
-    "0x8C2B671c470309f85bd5DD13C885820E3FAfE2bB"
-  );
+  const { contract } = useContract(AXIAL_MARKET_CONTRACT_ADDRESS);
   const { mutateAsync: offsetTokens, isLoading } = useContractWrite(
     contract,
     "offsetTokens"
@@ -35,9 +40,13 @@ const ConfirmOffsetModal = ({
   const offset = async (): Promise<string | null> => {
     try {
       const offsetWei = etherToWei(offsetValue.toString());
-      console.log({offsetWei});
       const data = await offsetTokens({
-        args: [offsetValue, getIntegerByCreditTypeString(creditType)],
+        args: [
+          offsetWei,
+          getIntegerByCreditTypeString(creditType),
+          AXIAL_DAO_MEMBERSHIP_NFT_ADDRESS,
+          AXIAL_DAO_MEMBERSHIP_NFT_TOKEN_URI,
+        ],
       });
 
       console.info("contract call successs", data);
@@ -73,7 +82,7 @@ const ConfirmOffsetModal = ({
 
       console.log({ result });
 
-      const dbResult = await registerOffser(offsetDetails);
+      const dbResult = await registerOffset(offsetDetails);
       console.log({ dbResult });
 
       if (dbResult) {

@@ -21,6 +21,7 @@ import { getUserStatus } from "./Repostitory/Repository";
 import SignupDialog from "./Components/Signup/Signup";
 import UserAppContext from "./Context/usermtecontext";
 import Loader from "./Components/Loader/Loader";
+import Registry from './Pages/Registry'
 
 const App: React.FC = () => {
   const [userMeta, setuserMeta] = useState({
@@ -83,6 +84,7 @@ const RouteHandler: React.FC<{}> = () => {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/swap" element={<SwapView />} />
+        <Route path="/registry" element={<Registry/>} />
 
         <Route
           path="/offset"

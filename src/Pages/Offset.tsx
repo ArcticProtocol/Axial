@@ -1,24 +1,45 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BuyCarbonCredits from "../Components/Carbon/BuyOffsets";
 import MonthlyOffsetChart from "../Components/Charts/MonthlyOffsetChart";
 import OffsetTypePie from "../Components/Charts/OffsetTypePie";
 import ProjectTabView from "../Components/Project/TabView";
 import UserAppContext, { UserAppCtx } from "../Context/usermtecontext";
 import { useBalance, useContract, useContractRead } from "@thirdweb-dev/react";
-import { weiToEther } from "../util";
+import {
+  weiToEther,
+  AXIAL_MARKET_CONTRACT_ADDRESS,
+  AOT_ADDRESS,
+  ACT_ADDRESS,
+  APT_ADDRESS,
+} from "../util";
 import ConfirmOffsetModal from "../Components/Carbon/OffsetConfirmation";
+import RegistryListView from "../Components/Carbon/Registry";
+import { CarbonOffset, gertUserOffsets } from "../Repostitory/Repository";
+import { useNavigate } from "react-router-dom";
 
 function OffsetView() {
   const { userMeta } = useContext<UserAppCtx>(UserAppContext)!;
 
-  const userOffsetContract = useContract(
-    "0x8C2B671c470309f85bd5DD13C885820E3FAfE2bB"
+  const [userOffsetRegistry, setUserRegistry] = useState<CarbonOffset[] | null>(
+    null
   );
+
+  const userOffsetContract = useContract(AXIAL_MARKET_CONTRACT_ADDRESS);
   const totalUserOffsets = useContractRead(
     userOffsetContract.contract,
     "getUserOffsets",
     [userMeta.pubcliKey]
   );
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    const call = async () => {
+      let response = await gertUserOffsets(userMeta.pubcliKey);
+      setUserRegistry(response);
+    };
+
+    call();
+  }, []);
 
   return (
     <div className="bg-gray-50 p-12">
@@ -33,13 +54,16 @@ function OffsetView() {
             </div>
 
             <div className="w-1/4 flex flex-col justify-center items-center">
-              <h2 className="text-4xl font-bold">tCO2</h2>
               <h2 className="text-3xl font-bold mb-4">History</h2>
 
+              {totalUserOffsets.data && (
+                <h2 className="text-2xl font-bold mb-4">
+                  {weiToEther(totalUserOffsets.data)} tCO2
+                </h2>
+              )}
+
               <>
-                {totalUserOffsets.data && (
-                  <OffsetTypePie totalUserOffsets={totalUserOffsets.data} />
-                )}
+                <OffsetTypePie totalUserOffsets={""} />
               </>
             </div>
           </div>
@@ -48,6 +72,27 @@ function OffsetView() {
 
           <InitiateOffset />
         </div>
+      </section>
+      {userOffsetRegistry && (
+        <section className="">
+          <div className="flex flex-col items-center mt-8 mb-8">
+            <h1 className="text-black font-semibold text-2xl">
+              Offset Transactions
+            </h1>
+            <RegistryListView data={userOffsetRegistry} />
+          </div>
+        </section>
+      )}
+
+      <section className="flex flex-col items-center">
+        <button
+          className="bg-green-800 rounded-lg text-white text-lg px-10 py-4 m-10 self-center text-center hover:bg-green-900 "
+          onClick={() => {
+            navigate("/registry");
+          }}
+        >
+          View Global Registry
+        </button>
       </section>
 
       <section>
@@ -60,7 +105,7 @@ function OffsetView() {
 }
 
 const InitiateOffset: React.FC = () => {
-  const { userMeta } = useContext<UserAppCtx>(UserAppContext)!;
+  // const { userMeta } = useContext<UserAppCtx>(UserAppContext)!;
   const [showConfrimOffset, setConfirmOffset] = useState<boolean>(false);
 
   const [currentOffset, setCurrentOffset] = useState({
@@ -68,9 +113,9 @@ const InitiateOffset: React.FC = () => {
     maxBalance: 0,
   });
 
-  const oceanToken = useBalance("0xD10Fa568841E5e5B214A7cF91C2BC0DBafDdD29D");
-  const cleanToken = useBalance("0x9f72Edc0F99066d14b7AcB752d7144F4A5cCdf1D");
-  const plasticToken = useBalance("0xD7c19583873A992d8fC276725a896358fcD714F3");
+  const oceanToken = useBalance(AOT_ADDRESS);
+  const cleanToken = useBalance(ACT_ADDRESS);
+  const plasticToken = useBalance(APT_ADDRESS);
 
   return (
     <div className="w-full bg-white shadow-md mt-10">

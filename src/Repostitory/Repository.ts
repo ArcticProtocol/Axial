@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { formatTimestamp, formatTimestampMonth } from "../util";
 
 const ENDPOINT = "http://localhost:3001";
 
@@ -58,7 +59,6 @@ async function createUser(
     );
     return response;
   } catch (error) {
-    // Handle error
     throw new Error("Failed to create user");
   }
 }
@@ -88,17 +88,7 @@ type CarbonOffsetRequest = {
   owner: string;
 };
 
-type CarbonOffsetResponse = {
-  userName: string;
-  offsetAmount: number;
-  creditType: string;
-  txHash: string;
-  owner: string;
-  timestamp: string;
-  month?: string;
-};
-
-const registerOffser = async (
+const registerOffset = async (
   offsetDetails: CarbonOffsetRequest
 ): Promise<boolean> => {
   try {
@@ -116,4 +106,67 @@ const registerOffser = async (
   }
 };
 
-export { getUserStatus, createUser, uploadFile, registerOffser };
+type CarbonOffset = {
+  userName: string;
+  offsetAmount: number;
+  creditType: string;
+  txHash: string;
+  owner: string;
+  timestamp: string;
+  month?: string;
+};
+
+const gertUserOffsets = async (address: string): Promise<CarbonOffset[]> => {
+  try {
+    const response = await axios.get(`${ENDPOINT}/userOffsets`, {
+      params: {
+        address,
+      },
+    });
+
+    const offsets: CarbonOffset[] = [];
+    response.data.forEach((e: CarbonOffset) => {
+      let m = formatTimestampMonth(e.timestamp);
+      let t = formatTimestamp(e.timestamp);
+      e.month = m;
+      e.timestamp = t;
+      offsets.push(e);
+    });
+
+    return offsets;
+  } catch (error) {
+    console.log({ error });
+    throw new Error("Failed to get registry ");
+  }
+};
+
+const getGlobalOffsetRegistry = async (): Promise<CarbonOffset[]> => {
+  try {
+    const response = await axios.get(`${ENDPOINT}/registry`, {});
+
+    const offsets: CarbonOffset[] = [];
+    response.data.forEach((e: CarbonOffset) => {
+      let m = formatTimestampMonth(e.timestamp);
+      let t = formatTimestamp(e.timestamp);
+      e.month = m;
+      e.timestamp = t;
+      offsets.push(e);
+    });
+
+    return offsets;
+  } catch (error) {
+    console.log({ error });
+    throw new Error("Failed to get registry ");
+  }
+};
+
+export {
+  getUserStatus,
+  createUser,
+  uploadFile,
+  registerOffset,
+  gertUserOffsets,
+  getGlobalOffsetRegistry,
+};
+
+export type { CarbonOffset };

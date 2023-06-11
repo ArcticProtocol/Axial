@@ -1,7 +1,7 @@
 import { Cell, Legend, Pie, PieChart } from "recharts";
 
 type OffsetPieParams = {
-  totalUserOffsets: number;
+  totalUserOffsets: string;
 };
 
 const OffsetTypePie = ({ totalUserOffsets }: OffsetPieParams) => {
